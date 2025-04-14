@@ -1,21 +1,23 @@
 // ==UserScript==
-// @name         Odreklamovač 2.0
-// @version      1.7
-// @description  Klikne na reklamu, "Blokovat", "POKRAČOVAT" a nakonec na button se svg ve stejném iframe na YouTube.
+// @name         Odreklamovač 2.1
+// @version      2.1
+// @description  Klikne na reklamu, "BLOKOVAT", "POKRAČOVAT" a nakonec na button se svg ve stejném iframe na YouTube.
 // @author       Ondra
-// @match        https://www.youtube.com/*
+// @match        https://www.youtube.com/watch*
 // @grant        none
 // ==/UserScript==
 
 (function () {
   'use strict';
 
+  console.log('🔄 Spouštím Odreklamovač 2.11...');
+
   // ✋ Pomocná async delay funkce
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   // 🔁 Hlavní async funkce
   const startAdFlow = async () => {
-    await delay(1000);
+    // await delay(1000);
 
     const adButton = document.querySelector('.ytp-ad-button-icon');
     if (!adButton) {
@@ -25,6 +27,7 @@
 
     console.log('✅ Klikám na tlačítko reklamy...');
     adButton.click();
+
     await delay(700);
 
     const iframe = document.querySelector('iframe.yt-about-this-ad-renderer');
@@ -42,7 +45,7 @@
     }
 
     const blokovat = Array.from(doc.querySelectorAll('span')).find(
-      span => span.textContent.trim() === 'Blokovat'
+      span => span.textContent.trim().toUpperCase() === 'BLOKOVAT'
     );
 
     if (!blokovat) {
@@ -52,6 +55,7 @@
 
     console.log('✅ Klikám na "Blokovat"...');
     blokovat.click();
+
     await delay(200);
 
     const pokracovat = Array.from(doc.querySelectorAll('*')).find(
@@ -65,6 +69,7 @@
 
     console.log('✅ Klikám na "POKRAČOVAT"...');
     pokracovat.click();
+
     await delay(200);
 
     const svgButton = Array.from(doc.querySelectorAll('button')).find(
